@@ -37,7 +37,7 @@ func ExportAction() {
 			Name: "BookList",
 			Prompt: &survey.Select{
 				Message: "選擇你想匯出書本清單的格式:",
-				Options: []string{"JSON", "Markdown"},
+				Options: []string{"JSON", "Markdown", "CSV"},
 				Default: "JSON",
 			},
 		},
@@ -84,6 +84,8 @@ func bookList(action string) {
 		exportJSON(row, count)
 	} else if action == "Markdown" {
 		exportMarkdown(row)
+	} else if action == "CSV" {
+		exportCSV(row)
 	}
 }
 
@@ -125,5 +127,17 @@ func exportMarkdown(row *sql.Rows) {
 		err := row.Scan(&Books.BookTitle, &Books.SubTitle, &Books.Author, &Books.Publisher, &Books.ISBN, &Books.ReleaseDate, &Books.Series, &Books.SeriesNumber, &Books.Rating, &Books.ReadPercent, &Books.LastRead, &Books.FileSize, &Books.Source)
 		error.CheckErr("Failed to insert Data: ", err)
 		_, _ = f.WriteString("| " + Books.BookTitle + " | " + Books.SubTitle + " | " + Books.Author + " | " + Books.Publisher + " | " + Books.ISBN + " | " + Books.ReleaseDate + " | " + Books.Series + " | " + strconv.Itoa(Books.SeriesNumber) + " | " + strconv.Itoa(Books.Rating) + " | " + strconv.Itoa(Books.ReadPercent) + " | " + Books.LastRead + " | " + strconv.Itoa(Books.FileSize) + " | " + Books.Source + " | \n")
+	}
+}
+
+func exportCSV(row *sql.Rows) {
+	f, err := os.Create("./output/BookListExport.csv")
+	error.CheckErr("Failed to create json: ", err)
+	_, _ = f.WriteString("\"BookTitle\",\"SubTitle\",\"Author\",\"Publisher\",\"ISBN\",\"ReleaseDate\",\"Series\",\"SeriesNumber\",\"Rating\",\"ReadPercent\",\"LastRead\",\"FileSize\",\"Source\" \n")
+	for row.Next() {
+		Books := Book{}
+		err := row.Scan(&Books.BookTitle, &Books.SubTitle, &Books.Author, &Books.Publisher, &Books.ISBN, &Books.ReleaseDate, &Books.Series, &Books.SeriesNumber, &Books.Rating, &Books.ReadPercent, &Books.LastRead, &Books.FileSize, &Books.Source)
+		error.CheckErr("Failed to insert Data: ", err)
+		_, _ = f.WriteString("\"" + Books.BookTitle + "\",\"" + Books.SubTitle + "\",\"" + Books.Author + "\",\"" + Books.Publisher + "\",\"" + Books.ISBN + "\",\"" + Books.ReleaseDate + "\",\"" + Books.Series + "\",\"" + strconv.Itoa(Books.SeriesNumber) + "\",\"" + strconv.Itoa(Books.Rating) + "\",\"" + strconv.Itoa(Books.ReadPercent) + "\",\"" + Books.LastRead + "\",\"" + strconv.Itoa(Books.FileSize) + "\",\"" + Books.Source + "\" \n")
 	}
 }

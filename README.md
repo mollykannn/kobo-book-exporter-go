@@ -1,6 +1,11 @@
-# KoboBookExport
+# kobo-book-exporter-go
 
-Export Kobo Book List & Highlight List.
+Export Kobo Book Highlight (.md) & Book List (.csv, .json & .md).
+
+Web版本在這裡 => [https://mollykannn.github.io/kobo-book-exporter](https://mollykannn.github.io/kobo-book-exporter)
+
+
+Reference from [Kobo Exporter: 匯出 Kobo 電子書的書籍清單與註記資料 (劃線與筆記) | Vixual](http://www.vixual.net/blog/archives/117)
 
 <br/>
 
